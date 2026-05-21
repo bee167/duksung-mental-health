@@ -5,7 +5,7 @@ const FEATURES = [
   {
     icon: '📋',
     title: '자가진단',
-    desc: 'PHQ-9 우울증 검사와 GAD-7 불안 검사로 나의 마음 상태를 확인하고 결과를 해석해 드려요.',
+    desc: '국립정신건강센터 한국인 우울·불안·스트레스 척도(NDS/NAS/NSS)로 나의 마음 상태를 확인해 드려요.',
     to: '/survey',
     cls: 'fc-survey',
   },
