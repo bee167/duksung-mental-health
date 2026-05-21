@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import DuksungLogo from '../components/DuksungLogo'
 
 const FEATURES = [
   {
@@ -29,7 +30,7 @@ export default function Home() {
     <div className="page">
       {/* Hero */}
       <section className="home-hero">
-        <span className="hero-emoji">🌸</span>
+        <DuksungLogo size={72} className="hero-logo" />
         <h1>
           마음이 힘들 때,<br />
           <span>마음봄</span>이 함께해요

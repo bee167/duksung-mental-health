@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 const SERVICES = [
   '개인 심리상담 (비밀 보장)',
   '집단 상담 프로그램',
-  '심리검사 (MMPI, MBTI 등)',
+  '심리검사 (MMPI-2, SCL-90-R 등)',
   '위기 개입 상담',
   '정신건강 교육 프로그램',
-  '온라인 상담',
+  '진로·학업 스트레스 상담',
+  '대인관계 상담',
 ]
 
 const EMERGENCY = [
@@ -30,6 +31,13 @@ const EMERGENCY = [
     tel: '1366',
     desc: '24시간 무료',
   },
+]
+
+const PROCEDURE = [
+  { step: '01', title: '예약 신청', desc: '전화(02-901-8386) 또는 방문으로 상담 예약' },
+  { step: '02', title: '접수 면접', desc: '상담사와 첫 만남으로 어려움과 상담 목표 파악 (약 50분)' },
+  { step: '03', title: '상담 진행', desc: '개인 상황에 맞춘 상담 계획으로 정기 상담 진행' },
+  { step: '04', title: '마무리', desc: '목표 달성 후 종결 또는 외부 기관 연계' },
 ]
 
 export default function Counseling() {
@@ -76,6 +84,10 @@ export default function Counseling() {
             <span className="info-label">예약</span>
             <span className="info-value">전화 또는 방문 예약</span>
           </div>
+          <div className="info-item">
+            <span className="info-label">비용</span>
+            <span className="info-value">재학생 전원 무료</span>
+          </div>
         </div>
 
         {/* 제공 서비스 */}
@@ -105,6 +117,7 @@ export default function Counseling() {
               '학업 스트레스가 극심할 때',
               '자해나 자살에 대한 생각이 들 때',
               '진로·미래에 대한 고민이 있을 때',
+              '외로움이나 고립감을 느낄 때',
             ].map((s) => (
               <li key={s}>{s}</li>
             ))}
@@ -125,6 +138,40 @@ export default function Counseling() {
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.5rem', lineHeight: 1.6 }}>
             * 본인이나 타인의 생명이 위험한 경우에만 예외적으로 조치가 취해질 수 있습니다.
           </p>
+        </div>
+      </div>
+
+      {/* 상담 절차 */}
+      <div className="info-card" style={{ marginBottom: '1.5rem' }}>
+        <div className="info-card-header">
+          <span className="info-card-icon">📋</span>
+          <h3>상담 절차</h3>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.75rem', marginTop: '0.5rem' }}>
+          {PROCEDURE.map((p) => (
+            <div key={p.step} style={{
+              background: 'var(--bg)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem',
+              textAlign: 'center',
+            }}>
+              <p style={{
+                width: '2rem',
+                height: '2rem',
+                borderRadius: '50%',
+                background: 'var(--sage)',
+                color: 'white',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 0.5rem',
+              }}>{p.step}</p>
+              <p style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-dark)', marginBottom: '0.3rem' }}>{p.title}</p>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', lineHeight: 1.5 }}>{p.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
 

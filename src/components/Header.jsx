@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
+import DuksungLogo from './DuksungLogo'
 
 const NAV_ITEMS = [
   { to: '/', label: '홈' },
@@ -15,7 +16,7 @@ export default function Header() {
     <header className="header">
       <div className="header-inner">
         <Link to="/" className="logo" onClick={() => setMenuOpen(false)}>
-          <span className="logo-icon">🌸</span>
+          <DuksungLogo size={36} />
           <span>
             마음봄
             <span className="logo-sub">덕성여대 정신건강 지원</span>
