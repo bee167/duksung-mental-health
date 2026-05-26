@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Survey from './pages/Survey'
 import Diary from './pages/Diary'
 import Counseling from './pages/Counseling'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/survey" element={<Survey />} />
           <Route path="/diary" element={<Diary />} />
           <Route path="/counseling" element={<Counseling />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </main>
       <Footer />

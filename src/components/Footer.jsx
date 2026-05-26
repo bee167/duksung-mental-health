@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Footer() {
   return (
     <footer className="footer">
@@ -13,6 +15,11 @@ export default function Footer() {
           긴급 위기상담 &nbsp;|&nbsp; 정신건강 위기상담전화{' '}
           <strong>1577-0199</strong> &nbsp;|&nbsp; 자살예방상담전화{' '}
           <strong>1393</strong>
+        </p>
+        <p style={{ marginTop: '0.75rem', fontSize: '0.78rem' }}>
+          <Link to="/privacy" className="footer-privacy-link">
+            개인정보 처리방침
+          </Link>
         </p>
       </div>
     </footer>
