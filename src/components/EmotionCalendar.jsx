@@ -48,7 +48,7 @@ export default function EmotionCalendar({ entries }) {
 
   const firstDow = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const today = now.toISOString().slice(0, 10)
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 
   const cells = []
   for (let i = 0; i < firstDow; i++) cells.push(null)

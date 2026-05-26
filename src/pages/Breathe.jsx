@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 const TECHNIQUES = {
   box: {
@@ -51,16 +51,153 @@ const GUIDE_TEXT = {
   exhale: '입으로 천천히 내쉬세요',
 }
 
+const SOUNDS = [
+  { id: 'none', label: '없음', emoji: '🔇' },
+  { id: 'rain', label: '빗소리', emoji: '🌧️' },
+  { id: 'fire', label: '장작소리', emoji: '🔥' },
+  { id: 'white', label: '백색소음', emoji: '🌊' },
+]
+
+/* ── Web Audio sound generators ── */
+function buildRain(ctx) {
+  const bufSize = ctx.sampleRate * 2
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate)
+  const data = buf.getChannelData(0)
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1
+
+  const src = ctx.createBufferSource()
+  src.buffer = buf
+  src.loop = true
+
+  const hipass = ctx.createBiquadFilter()
+  hipass.type = 'highpass'
+  hipass.frequency.value = 3200
+
+  const lopass = ctx.createBiquadFilter()
+  lopass.type = 'lowpass'
+  lopass.frequency.value = 8000
+
+  const gain = ctx.createGain()
+  gain.gain.value = 0.38
+
+  src.connect(hipass)
+  hipass.connect(lopass)
+  lopass.connect(gain)
+  gain.connect(ctx.destination)
+  src.start()
+  return { src, gain }
+}
+
+function buildFire(ctx) {
+  const bufSize = ctx.sampleRate * 2
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate)
+  const data = buf.getChannelData(0)
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1
+
+  const src = ctx.createBufferSource()
+  src.buffer = buf
+  src.loop = true
+
+  const lopass = ctx.createBiquadFilter()
+  lopass.type = 'lowpass'
+  lopass.frequency.value = 700
+
+  const lopass2 = ctx.createBiquadFilter()
+  lopass2.type = 'lowpass'
+  lopass2.frequency.value = 400
+
+  const gain = ctx.createGain()
+  gain.gain.value = 0.55
+
+  /* occasional crackle: slight random LFO on gain */
+  const lfo = ctx.createOscillator()
+  lfo.type = 'sawtooth'
+  lfo.frequency.value = 0.9
+  const lfoGain = ctx.createGain()
+  lfoGain.gain.value = 0.12
+  lfo.connect(lfoGain)
+  lfoGain.connect(gain.gain)
+  lfo.start()
+
+  src.connect(lopass)
+  lopass.connect(lopass2)
+  lopass2.connect(gain)
+  gain.connect(ctx.destination)
+  src.start()
+  return { src, gain, lfo }
+}
+
+function buildWhite(ctx) {
+  const bufSize = ctx.sampleRate * 2
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate)
+  const data = buf.getChannelData(0)
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1
+
+  const src = ctx.createBufferSource()
+  src.buffer = buf
+  src.loop = true
+
+  const gain = ctx.createGain()
+  gain.gain.value = 0.28
+
+  src.connect(gain)
+  gain.connect(ctx.destination)
+  src.start()
+  return { src, gain }
+}
+
+const BUILDERS = { rain: buildRain, fire: buildFire, white: buildWhite }
+
 export default function Breathe() {
   const [technique, setTechnique] = useState('box')
   const [isRunning, setIsRunning] = useState(false)
   const [phaseIdx, setPhaseIdx] = useState(0)
   const [count, setCount] = useState(TECHNIQUES.box.phases[0].duration)
   const [cycles, setCycles] = useState(0)
+  const [sound, setSound] = useState('none')
+
+  const audioRef = useRef(null) /* { ctx, nodes } */
 
   const phases = TECHNIQUES[technique].phases
   const currentPhase = phases[phaseIdx]
   const isHold = HOLD_IDS.has(currentPhase.id)
+
+  /* ── sound engine ── */
+  const stopSound = useCallback(() => {
+    if (!audioRef.current) return
+    const { ctx, nodes } = audioRef.current
+    try {
+      nodes.src.stop()
+      if (nodes.lfo) nodes.lfo.stop()
+    } catch {}
+    ctx.close()
+    audioRef.current = null
+  }, [])
+
+  const startSound = useCallback((id) => {
+    stopSound()
+    if (id === 'none') return
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const nodes = BUILDERS[id](ctx)
+    audioRef.current = { ctx, nodes }
+  }, [stopSound])
+
+  /* restart sound when selection changes while already playing */
+  useEffect(() => {
+    if (isRunning && sound !== 'none') {
+      startSound(sound)
+    } else if (sound === 'none') {
+      stopSound()
+    }
+  }, [sound]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* stop sound when breathing stops */
+  useEffect(() => {
+    if (!isRunning) stopSound()
+  }, [isRunning, stopSound])
+
+  /* cleanup on unmount */
+  useEffect(() => () => stopSound(), [stopSound])
 
   useEffect(() => {
     if (!isRunning) return
@@ -82,12 +219,14 @@ export default function Breathe() {
     setCount(phases[0].duration)
     setCycles(0)
     setIsRunning(true)
+    if (sound !== 'none') startSound(sound)
   }
 
   function handleStop() {
     setIsRunning(false)
     setPhaseIdx(0)
     setCount(phases[0].duration)
+    stopSound()
   }
 
   function handleTechChange(key) {
@@ -185,6 +324,23 @@ export default function Breathe() {
           ))}
         </div>
       )}
+
+      {/* Sound selector */}
+      <div className="breathe-sound-row">
+        <span className="breathe-sound-label">배경 사운드</span>
+        <div className="breathe-sound-chips">
+          {SOUNDS.map((s) => (
+            <button
+              key={s.id}
+              className={`breathe-sound-chip${sound === s.id ? ' active' : ''}`}
+              onClick={() => setSound(s.id)}
+              aria-pressed={sound === s.id}
+            >
+              {s.emoji} {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Tips when idle */}
       {!isRunning && (

@@ -65,7 +65,7 @@ export default function Counseling() {
           </div>
           <div className="info-item">
             <span className="info-label">위치</span>
-            <span className="info-value">학생회관 2층</span>
+            <span className="info-value">덕우당</span>
           </div>
           <div className="info-item">
             <span className="info-label">전화</span>

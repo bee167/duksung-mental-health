@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ParticipantModal from '../components/ParticipantModal'
+import HomeCat from '../components/HomeCat'
 
 function IconSurvey() {
   return (
@@ -135,6 +136,9 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Cat companion */}
+      <HomeCat />
 
       {/* Survey Banner */}
       <div className="survey-banner">
