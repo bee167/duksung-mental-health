@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=375, initial-scale=1.0">
+  <title>마음봄 — 대시보드</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #190019;
+      --c2: #2B124C;
+      --c3: #522B5B;
+      --c4: #854F6C;
+      --c5: #DFB6B2;
+      --c6: #FBE4D8;
+    }
+
+    body {
+      font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--c1);
+      color: var(--c6);
+      width: 375px;
+      min-height: 812px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Stars background ── */
+    .stars {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 8%   12%, rgba(251,228,216,.50) 100%, transparent),
+        radial-gradient(1px   1px   at 83%   8%,  rgba(251,228,216,.35) 100%, transparent),
+        radial-gradient(1px   1px   at 51%  82%,  rgba(251,228,216,.28) 100%, transparent),
+        radial-gradient(2px   2px   at 72%  50%,  rgba(251,228,216,.20) 100%, transparent),
+        radial-gradient(1px   1px   at 24%  68%,  rgba(251,228,216,.18) 100%, transparent),
+        radial-gradient(1px   1px   at 89%  74%,  rgba(251,228,216,.32) 100%, transparent),
+        radial-gradient(1px   1px   at 5%   88%,  rgba(251,228,216,.16) 100%, transparent),
+        radial-gradient(1px   1px   at 36%  30%,  rgba(251,228,216,.15) 100%, transparent),
+        radial-gradient(1.5px 1.5px at 61%  20%,  rgba(251,228,216,.30) 100%, transparent),
+        radial-gradient(1px   1px   at 17%  45%,  rgba(251,228,216,.14) 100%, transparent),
+        radial-gradient(1px   1px   at 45%  60%,  rgba(223,182,178,.16) 100%, transparent),
+        radial-gradient(1px   1px   at 76%  36%,  rgba(251,228,216,.20) 100%, transparent),
+        radial-gradient(1px   1px   at 30%  5%,   rgba(251,228,216,.24) 100%, transparent),
+        radial-gradient(1px   1px   at 56%  93%,  rgba(223,182,178,.14) 100%, transparent),
+        radial-gradient(1px   1px   at 93%  28%,  rgba(251,228,216,.18) 100%, transparent),
+        radial-gradient(1px   1px   at 13%  55%,  rgba(251,228,216,.12) 100%, transparent);
+    }
+
+    /* ── Screen wrapper ── */
+    .screen {
+      position: relative; z-index: 1;
+      min-height: 812px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(251,228,216,.55);
+      letter-spacing: .02em;
+    }
+    .status-icons { display: flex; gap: 6px; align-items: center; }
+    .status-icons span { font-size: 11px; }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 18px 24px 0;
+    }
+    .greeting {
+      font-size: 13px;
+      color: rgba(223,182,178,.60);
+      margin-bottom: 5px;
+      letter-spacing: .01em;
+    }
+    .page-title {
+      font-size: 23px;
+      font-weight: 800;
+      color: var(--c6);
+      line-height: 1.3;
+    }
+    .date-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .date-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(82,43,91,.50);
+      border: 1px solid rgba(223,182,178,.15);
+      border-radius: 99px;
+      padding: 5px 13px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(223,182,178,.75);
+    }
+    .streak-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(223,182,178,.10);
+      border: 1px solid rgba(223,182,178,.18);
+      border-radius: 99px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c6);
+    }
+
+    /* ── Breathing center area ── */
+    .breathe-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0 8px;
+      position: relative;
+    }
+
+    /* Technique chips */
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .chip {
+      padding: 7px 16px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 700;
+      font-family: inherit;
+      border: 1.5px solid rgba(223,182,178,.14);
+      background: transparent;
+      color: rgba(223,182,178,.45);
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .chip.active {
+      background: rgba(223,182,178,.14);
+      border-color: rgba(223,182,178,.42);
+      color: var(--c6);
+      box-shadow: 0 0 20px rgba(251,228,216,.08);
+    }
+    .chip:hover:not(.active) {
+      border-color: rgba(223,182,178,.26);
+      color: rgba(223,182,178,.70);
+    }
+
+    /* Orb */
+    .orb-wrap {
+      position: relative;
+      width: 230px; height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+    .orb-ring-outer {
+      position: absolute;
+      width: 230px; height: 230px;
+      border-radius: 50%;
+      border: 1px solid rgba(223,182,178,.08);
+      animation: ring-pulse 4s ease-in-out infinite;
+    }
+    .orb-ring-inner {
+      position: absolute;
+      width: 210px; height: 210px;
+      border-radius: 50%;
+      border: 1px solid rgba(223,182,178,.13);
+      animation: ring-pulse 4s ease-in-out infinite .2s;
+    }
+    .orb {
+      width: 186px; height: 186px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 32%,
+        var(--c6) 0%,
+        var(--c5) 35%,
+        rgba(133,79,108,.60) 68%,
+        rgba(82,43,91,.28) 100%);
+      border: 1px solid rgba(251,228,216,.24);
+      box-shadow:
+        0 0 55px rgba(251,228,216,.16),
+        0 0 110px rgba(223,182,178,.09),
+        inset 0 0 28px rgba(251,228,216,.07);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      animation: breathe-orb 4s ease-in-out infinite;
+    }
+    .orb-phase {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: rgba(43,18,76,.65);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .orb-count {
+      font-size: 46px;
+      font-weight: 800;
+      color: rgba(25,0,25,.80);
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+    .orb-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(43,18,76,.55);
+      margin-top: 3px;
+    }
+
+    @keyframes breathe-orb {
+      0%, 100% {
+        transform: scale(1.0);
+        box-shadow:
+          0 0 50px rgba(251,228,216,.13),
+          0 0 100px rgba(223,182,178,.07),
+          inset 0 0 24px rgba(251,228,216,.06);
+      }
+      50% {
+        transform: scale(1.13);
+        box-shadow:
+          0 0 88px rgba(251,228,216,.30),
+          0 0 160px rgba(223,182,178,.16),
+          inset 0 0 44px rgba(251,228,216,.13);
+      }
+    }
+    @keyframes ring-pulse {
+      0%, 100% { transform: scale(1.0); opacity: .6; }
+      50%       { transform: scale(1.16); opacity: .15; }
+    }
+
+    .guide-text {
+      font-size: 12.5px;
+      color: rgba(223,182,178,.60);
+      letter-spacing: .03em;
+      text-align: center;
+      min-height: 18px;
+    }
+    .phase-dots {
+      display: flex;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(251,228,216,.20);
+      transition: all .3s ease;
+    }
+    .dot.active {
+      background: var(--c6);
+      box-shadow: 0 0 8px rgba(251,228,216,.55);
+    }
+
+    /* ── Bottom control panel ── */
+    .panel {
+      background: rgba(43,18,76,.90);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-top: 1px solid rgba(223,182,178,.10);
+      border-radius: 28px 28px 0 0;
+      padding: 14px 20px 36px;
+    }
+
+    .panel-handle {
+      width: 38px; height: 4px;
+      border-radius: 99px;
+      background: rgba(223,182,178,.22);
+      margin: 0 auto 18px;
+    }
+
+    /* Gauge */
+    .gauge-card {
+      background: rgba(82,43,91,.45);
+      border: 1px solid rgba(223,182,178,.10);
+      border-radius: 18px;
+      padding: 14px 16px 16px;
+      margin-bottom: 14px;
+    }
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 10px;
+    }
+    .gauge-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(223,182,178,.65);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .gauge-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .gauge-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--c6);
+      line-height: 1;
+    }
+    .gauge-unit {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(223,182,178,.55);
+    }
+    .gauge-track {
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(25,0,25,.55);
+      overflow: visible;
+      position: relative;
+    }
+    .gauge-fill {
+      height: 100%;
+      width: 72%;
+      background: linear-gradient(90deg, var(--c5) 0%, var(--c6) 100%);
+      border-radius: 99px;
+      position: relative;
+    }
+    .gauge-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px; top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 14px;
+      background: var(--c6);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(251,228,216,.65), 0 0 0 3px rgba(251,228,216,.18);
+    }
+    .gauge-ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding: 0 2px;
+    }
+    .gauge-tick {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: rgba(223,182,178,.35);
+    }
+
+    /* Quick actions */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+    }
+    .action-icon {
+      width: 54px; height: 54px;
+      border-radius: 17px;
+      background: rgba(82,43,91,.55);
+      border: 1px solid rgba(223,182,178,.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: all .2s ease;
+      position: relative;
+    }
+    .action-icon.active-icon {
+      background: linear-gradient(135deg, rgba(223,182,178,.22) 0%, rgba(251,228,216,.14) 100%);
+      border-color: rgba(223,182,178,.32);
+      box-shadow: 0 4px 18px rgba(223,182,178,.14);
+    }
+    .action-item:hover .action-icon {
+      transform: translateY(-3px);
+      border-color: rgba(223,182,178,.25);
+      background: rgba(82,43,91,.72);
+    }
+    .action-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: rgba(223,182,178,.60);
+      text-align: center;
+    }
+    .action-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      width: 16px; height: 16px;
+      background: linear-gradient(135deg, var(--c5) 0%, var(--c6) 100%);
+      border-radius: 50%;
+      border: 2px solid rgba(43,18,76,.90);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 800;
+      color: var(--c1);
+    }
+
+    /* CTA button */
+    .cta-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--c5) 0%, var(--c6) 100%);
+      color: var(--c1);
+      font-size: 15px;
+      font-weight: 800;
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: .02em;
+      box-shadow: 0 6px 28px rgba(223,182,178,.30);
+      transition: all .2s ease;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px rgba(223,182,178,.42);
+    }
+    .cta-btn:active {
+      transform: translateY(0) scale(.97);
+    }
+    .cta-icon {
+      width: 20px; height: 20px;
+      background: rgba(25,0,25,.18);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Stars -->
+  <div class="stars" aria-hidden="true"></div>
+
+  <div class="screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <span>▲▲▲</span>
+        <span>WiFi</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header">
+      <p class="greeting">🌙 안녕하세요</p>
+      <h1 class="page-title">오늘 마음은<br>어떠세요?</h1>
+      <div class="date-row">
+        <span class="date-chip">✦ 2026년 5월 26일 월요일</span>
+        <span class="streak-chip">🔥 7일 연속</span>
+      </div>
+    </div>
+
+    <!-- Breathing center -->
+    <div class="breathe-area">
+
+      <!-- Technique selector -->
+      <div class="chip-row">
+        <button class="chip active" onclick="selectChip(this, 0)">🔲 박스</button>
+        <button class="chip" onclick="selectChip(this, 1)">🌙 4-7-8</button>
+        <button class="chip" onclick="selectChip(this, 2)">🌿 편안한</button>
+      </div>
+
+      <!-- Orb -->
+      <div class="orb-wrap">
+        <div class="orb-ring-outer"></div>
+        <div class="orb-ring-inner"></div>
+        <div class="orb" id="orb">
+          <span class="orb-phase" id="orb-phase">들이쉬기</span>
+          <span class="orb-count" id="orb-count">4</span>
+          <span class="orb-hint" id="orb-hint">코로 천천히</span>
+        </div>
+      </div>
+
+      <p class="guide-text" id="guide-text">코로 천천히 들이쉬세요</p>
+
+      <div class="phase-dots" id="phase-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+    </div>
+
+    <!-- Bottom control panel -->
+    <div class="panel">
+      <div class="panel-handle"></div>
+
+      <!-- Mood gauge card -->
+      <div class="gauge-card">
+        <div class="gauge-header">
+          <span class="gauge-label">오늘의 마음 안정도</span>
+          <div class="gauge-meta">
+            <span class="gauge-value">72</span>
+            <span class="gauge-unit">/ 100</span>
+          </div>
+        </div>
+        <div class="gauge-track">
+          <div class="gauge-fill"></div>
+        </div>
+        <div class="gauge-ticks">
+          <span class="gauge-tick">불안</span>
+          <span class="gauge-tick">보통</span>
+          <span class="gauge-tick">안정</span>
+          <span class="gauge-tick">평온</span>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="actions-grid">
+        <div class="action-item">
+          <div class="action-icon">🧠</div>
+          <span class="action-label">자가진단</span>
+        </div>
+        <div class="action-item">
+          <div class="action-icon active-icon">
+            📔
+            <div class="action-badge">3</div>
+          </div>
+          <span class="action-label">감정일기</span>
+        </div>
+        <div class="action-item">
+          <div class="action-icon active-icon">🫁</div>
+          <span class="action-label">호흡</span>
+        </div>
+        <div class="action-item">
+          <div class="action-icon">💬</div>
+          <span class="action-label">상담 연결</span>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button class="cta-btn" id="cta" onclick="toggleBreathe()">
+        <span class="cta-icon">▶</span>
+        호흡 시작하기
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    /* ── Technique configs ── */
+    const TECHNIQUES = {
+      0: {
+        phases: [
+          { label: '들이쉬기', dur: 4, hint: '코로 천천히', guide: '코로 천천히 들이쉬세요' },
+          { label: '참기',     dur: 4, hint: '유지하세요',  guide: '숨을 참으세요' },
+          { label: '내쉬기',   dur: 4, hint: '입으로 천천히', guide: '입으로 천천히 내쉬세요' },
+          { label: '참기',     dur: 4, hint: '유지하세요',  guide: '숨을 참으세요' },
+        ]
+      },
+      1: {
+        phases: [
+          { label: '들이쉬기', dur: 4, hint: '코로',   guide: '코로 4초 들이쉬세요' },
+          { label: '참기',     dur: 7, hint: '참기',   guide: '7초 참으세요' },
+          { label: '내쉬기',   dur: 8, hint: '입으로', guide: '8초 내쉬세요' },
+        ]
+      },
+      2: {
+        phases: [
+          { label: '들이쉬기', dur: 5, hint: '코로',   guide: '코로 천천히 들이쉬세요' },
+          { label: '내쉬기',   dur: 5, hint: '입으로', guide: '입으로 천천히 내쉬세요' },
+        ]
+      }
+    };
+
+    let currentTech = 0;
+    let isRunning = false;
+    let phaseIdx = 0;
+    let count = 4;
+    let timer = null;
+
+    function selectChip(el, idx) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentTech = idx;
+      if (isRunning) stopBreathe();
+      resetDots();
+    }
+
+    function resetDots() {
+      const tech = TECHNIQUES[currentTech];
+      const container = document.getElementById('phase-dots');
+      container.innerHTML = tech.phases.map((_, i) =>
+        `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+      ).join('');
+      phaseIdx = 0;
+      const p = tech.phases[0];
+      document.getElementById('orb-phase').textContent = p.label;
+      document.getElementById('orb-count').textContent = p.dur;
+      document.getElementById('orb-hint').textContent = p.hint;
+      document.getElementById('guide-text').textContent = '시작하려면 버튼을 누르세요';
+      count = p.dur;
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((d, i) => d.classList.toggle('active', i === phaseIdx));
+    }
+
+    function tick() {
+      const tech = TECHNIQUES[currentTech];
+      const phase = tech.phases[phaseIdx];
+      document.getElementById('orb-count').textContent = count;
+      document.getElementById('orb-phase').textContent = phase.label;
+      document.getElementById('orb-hint').textContent = phase.hint;
+      document.getElementById('guide-text').textContent = phase.guide;
+      updateDots();
+
+      if (count > 1) {
+        count--;
+        timer = setTimeout(tick, 1000);
+      } else {
+        phaseIdx = (phaseIdx + 1) % tech.phases.length;
+        count = tech.phases[phaseIdx].dur;
+        timer = setTimeout(tick, 1000);
+      }
+    }
+
+    function toggleBreathe() {
+      isRunning ? stopBreathe() : startBreathe();
+    }
+
+    function startBreathe() {
+      isRunning = true;
+      phaseIdx = 0;
+      count = TECHNIQUES[currentTech].phases[0].dur;
+      document.getElementById('cta').innerHTML =
+        '<span class="cta-icon">■</span> 멈추기';
+      document.getElementById('cta').style.background =
+        'linear-gradient(135deg, rgba(133,79,108,.55) 0%, rgba(82,43,91,.70) 100%)';
+      document.getElementById('cta').style.color = 'var(--c6)';
+      document.getElementById('cta').style.boxShadow = 'none';
+      tick();
+    }
+
+    function stopBreathe() {
+      isRunning = false;
+      clearTimeout(timer);
+      document.getElementById('cta').innerHTML =
+        '<span class="cta-icon">▶</span> 호흡 시작하기';
+      document.getElementById('cta').style.background =
+        'linear-gradient(135deg, #DFB6B2 0%, #FBE4D8 100%)';
+      document.getElementById('cta').style.color = 'var(--c1)';
+      document.getElementById('cta').style.boxShadow = '0 6px 28px rgba(223,182,178,.30)';
+      resetDots();
+    }
+
+    /* init */
+    resetDots();
+  </script>
+</body>
+</html>
