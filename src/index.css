@@ -60,6 +60,17 @@
 }
 
 /* ============================================
+   Font
+   ============================================ */
+@font-face {
+  font-family: 'DungGeunMo';
+  src: url('/fonts/DungGeunMo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
    Reset & Base
    ============================================ */
 *, *::before, *::after {
@@ -73,7 +84,7 @@ html {
 }
 
 body {
-  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  font-family: 'DungGeunMo', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
   font-size: 16px;
   line-height: 1.65;
   color: var(--text-dark);
@@ -176,12 +187,13 @@ p  { color: var(--text-medium); }
 }
 
 .btn-secondary {
-  background: var(--rose-pale2);
-  color: var(--rose);
+  background: rgba(251, 228, 216, 0.07);
+  color: var(--text-dark);
+  border: 1.5px solid rgba(251, 228, 216, 0.28);
 }
 .btn-secondary:hover {
-  background: var(--rose-light);
-  color: #fff;
+  background: rgba(251, 228, 216, 0.14);
+  border-color: rgba(251, 228, 216, 0.45);
   transform: translateY(-2px);
 }
 
@@ -472,19 +484,42 @@ p  { color: var(--text-medium); }
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.feature-card.fc-survey {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
   gap: 1.25rem;
-  margin-bottom: 2.5rem;
+}
+
+.feature-card.fc-survey .feature-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-card.fc-survey .feature-link {
+  flex-shrink: 0;
+}
+
+@media (max-width: 360px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .feature-card.fc-survey { flex-direction: column; align-items: flex-start; }
 }
 
 .feature-card {
   background: var(--card);
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--border);
-  padding: 1.75rem 1.5rem;
+  padding: 1.5rem;
   transition: var(--transition);
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   position: relative;
   overflow: hidden;
 }
@@ -509,8 +544,18 @@ p  { color: var(--text-medium); }
 
 .feature-icon {
   font-size: 2.5rem;
-  margin-bottom: 0.75rem;
   display: block;
+}
+
+.feature-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
 }
 
 .feature-card h3 {
@@ -1986,4 +2031,161 @@ p  { color: var(--text-medium); }
   .breathe-count {
     font-size: 3rem;
   }
+}
+
+/* ============================================
+   Notice collapse button
+   ============================================ */
+.notice-expand-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--rose);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.notice-expand-btn:hover { color: var(--rose-hover); }
+
+/* ============================================
+   Emotion Calendar
+   ============================================ */
+.emo-cal {
+  background: rgba(43, 18, 76, 0.55);
+  border: 1px solid rgba(223, 182, 178, 0.10);
+  border-radius: var(--card-radius);
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.emo-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.emo-cal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.emo-cal-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.emo-cal-nav {
+  background: rgba(223, 182, 178, 0.10);
+  border: 1px solid rgba(223, 182, 178, 0.14);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-medium);
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+  line-height: 1;
+}
+.emo-cal-nav:hover:not(:disabled) {
+  background: rgba(223, 182, 178, 0.18);
+  color: var(--text-dark);
+}
+.emo-cal-nav:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.emo-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.emo-cal-weekday {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(223, 182, 178, 0.40);
+  padding: 4px 0;
+}
+.emo-cal-weekday:first-child { color: rgba(208, 128, 128, 0.55); }
+.emo-cal-weekday:last-child  { color: rgba(133, 79, 108, 0.65); }
+
+.emo-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.emo-cal-cell {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.70rem;
+  font-weight: 600;
+  background: rgba(25, 0, 25, 0.45);
+  color: rgba(223, 182, 178, 0.35);
+  transition: all 0.2s ease;
+  cursor: default;
+  user-select: none;
+  position: relative;
+}
+.emo-cal-cell.empty {
+  background: transparent;
+}
+.emo-cal-cell.has-entry {
+  color: rgba(25, 0, 25, 0.78);
+  font-weight: 700;
+}
+.emo-cal-cell.today {
+  box-shadow: 0 0 0 1.5px rgba(251, 228, 216, 0.55);
+  color: var(--text-dark);
+}
+.emo-cal-cell.today.has-entry {
+  color: rgba(25, 0, 25, 0.85);
+}
+.emo-cal-cell:not(.empty):not(.has-entry):hover {
+  background: rgba(82, 43, 91, 0.40);
+}
+
+.emo-cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(223, 182, 178, 0.08);
+}
+.emo-cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.70rem;
+  color: rgba(223, 182, 178, 0.50);
+}
+.emo-cal-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.emo-cal-empty-hint {
+  text-align: center;
+  font-size: 0.80rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0 0.25rem;
 }

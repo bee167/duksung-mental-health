@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import EmotionCalendar from '../components/EmotionCalendar'
 
 const MOODS = [
   { emoji: '😊', label: '행복해요' },
@@ -168,6 +169,9 @@ export default function Diary() {
           </button>
         </div>
       </div>
+
+      {/* Emotion Calendar */}
+      <EmotionCalendar entries={entries} />
 
       {/* Entry List */}
       <div className="diary-list">
