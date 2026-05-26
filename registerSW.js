@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/duksung-mental-health/sw.js', { scope: '/duksung-mental-health/' })})}
