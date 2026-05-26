@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import DuksungLogo from '../components/DuksungLogo'
+import ParticipantModal from '../components/ParticipantModal'
 
 const FEATURES = [
   {
@@ -28,6 +29,7 @@ const FEATURES = [
 export default function Home() {
   return (
     <div className="page">
+      <ParticipantModal />
       {/* Hero */}
       <section className="home-hero">
         <DuksungLogo size={72} className="hero-logo" />
