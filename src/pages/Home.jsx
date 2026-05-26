@@ -76,6 +76,25 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      {/* Survey Banner */}
+      <div className="survey-banner">
+        <div className="survey-banner-text">
+          <span className="survey-banner-icon">📝</span>
+          <div>
+            <h4>마음봄 만족도 조사</h4>
+            <p>서비스 개선을 위해 소중한 의견을 들려주세요. 1분이면 충분해요!</p>
+          </div>
+        </div>
+        <a
+          href="https://forms.gle/ywnBXNLURF1kUNtk7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-sage survey-banner-btn"
+        >
+          참여하기 →
+        </a>
+      </div>
     </div>
   )
 }

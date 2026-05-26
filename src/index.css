@@ -1357,3 +1357,58 @@ p  { color: var(--text-medium); }
 .privacy-content a:hover {
   color: var(--sage-hover, #5a9178);
 }
+
+/* ============================================
+   Survey Banner
+   ============================================ */
+.survey-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, var(--sage-pale) 0%, var(--lavender-pale) 100%);
+  border: 1.5px solid var(--sage-light);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.survey-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.survey-banner-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.survey-banner-text h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.2rem;
+}
+
+.survey-banner-text p {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  margin: 0;
+}
+
+.survey-banner-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .survey-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .survey-banner-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
