@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#2B124C"/>
+      <stop offset="100%" stop-color="#190019"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FBE4D8" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FBE4D8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- Soft glow -->
+  <circle cx="256" cy="256" r="220" fill="url(#glow)"/>
+
+  <!-- Stars -->
+  <circle cx="88"  cy="96"  r="4" fill="#FBE4D8" opacity="0.45"/>
+  <circle cx="420" cy="80"  r="3" fill="#DFB6B2" opacity="0.35"/>
+  <circle cx="440" cy="380" r="4" fill="#FBE4D8" opacity="0.30"/>
+  <circle cx="72"  cy="400" r="3" fill="#DFB6B2" opacity="0.25"/>
+  <circle cx="380" cy="440" r="2" fill="#FBE4D8" opacity="0.40"/>
+  <circle cx="140" cy="440" r="2" fill="#DFB6B2" opacity="0.30"/>
+
+  <!-- Flower petals (outer) -->
+  <ellipse cx="256" cy="148" rx="28" ry="60" fill="#854F6C" opacity="0.70"/>
+  <ellipse cx="256" cy="364" rx="28" ry="60" fill="#854F6C" opacity="0.70"/>
+  <ellipse cx="148" cy="256" rx="60" ry="28" fill="#854F6C" opacity="0.70"/>
+  <ellipse cx="364" cy="256" rx="60" ry="28" fill="#854F6C" opacity="0.70"/>
+  <!-- Diagonal petals -->
+  <ellipse cx="192" cy="192" rx="24" ry="54"
+    fill="#522B5B" opacity="0.60" transform="rotate(-45 192 192)"/>
+  <ellipse cx="320" cy="192" rx="24" ry="54"
+    fill="#522B5B" opacity="0.60" transform="rotate(45 320 192)"/>
+  <ellipse cx="192" cy="320" rx="24" ry="54"
+    fill="#522B5B" opacity="0.60" transform="rotate(45 192 320)"/>
+  <ellipse cx="320" cy="320" rx="24" ry="54"
+    fill="#522B5B" opacity="0.60" transform="rotate(-45 320 320)"/>
+
+  <!-- Inner petals (cream) -->
+  <ellipse cx="256" cy="185" rx="18" ry="42" fill="#DFB6B2" opacity="0.90"/>
+  <ellipse cx="256" cy="327" rx="18" ry="42" fill="#DFB6B2" opacity="0.90"/>
+  <ellipse cx="185" cy="256" rx="42" ry="18" fill="#DFB6B2" opacity="0.90"/>
+  <ellipse cx="327" cy="256" rx="42" ry="18" fill="#DFB6B2" opacity="0.90"/>
+
+  <!-- Center circle -->
+  <circle cx="256" cy="256" r="52" fill="#FBE4D8"/>
+  <circle cx="256" cy="256" r="44" fill="#FBE4D8"/>
+
+  <!-- Center dot highlight -->
+  <circle cx="244" cy="244" r="14" fill="rgba(255,255,255,0.35)"/>
+
+  <!-- 봄 character hint — simple leaf sprout -->
+  <path d="M256 285 Q256 265 256 245" stroke="#854F6C" stroke-width="5"
+    stroke-linecap="round" fill="none"/>
+  <path d="M256 265 Q240 250 228 256" stroke="#854F6C" stroke-width="4"
+    stroke-linecap="round" fill="none"/>
+  <path d="M256 258 Q272 243 284 249" stroke="#854F6C" stroke-width="4"
+    stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: safe zone is center 80% — all key content inside 205–307px -->
+  <defs>
+    <radialGradient id="mbg" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#2B124C"/>
+      <stop offset="100%" stop-color="#190019"/>
+    </radialGradient>
+    <radialGradient id="mglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FBE4D8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FBE4D8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Full-bleed background (maskable needs no rounded corners) -->
+  <rect width="512" height="512" fill="url(#mbg)"/>
+  <circle cx="256" cy="256" r="220" fill="url(#mglow)"/>
+
+  <!-- Petals (scaled down to stay in safe zone) -->
+  <ellipse cx="256" cy="190" rx="20" ry="44" fill="#854F6C" opacity="0.75"/>
+  <ellipse cx="256" cy="322" rx="20" ry="44" fill="#854F6C" opacity="0.75"/>
+  <ellipse cx="190" cy="256" rx="44" ry="20" fill="#854F6C" opacity="0.75"/>
+  <ellipse cx="322" cy="256" rx="44" ry="20" fill="#854F6C" opacity="0.75"/>
+  <ellipse cx="210" cy="210" rx="18" ry="40"
+    fill="#522B5B" opacity="0.65" transform="rotate(-45 210 210)"/>
+  <ellipse cx="302" cy="210" rx="18" ry="40"
+    fill="#522B5B" opacity="0.65" transform="rotate(45 302 210)"/>
+  <ellipse cx="210" cy="302" rx="18" ry="40"
+    fill="#522B5B" opacity="0.65" transform="rotate(45 210 302)"/>
+  <ellipse cx="302" cy="302" rx="18" ry="40"
+    fill="#522B5B" opacity="0.65" transform="rotate(-45 302 302)"/>
+
+  <ellipse cx="256" cy="210" rx="13" ry="34" fill="#DFB6B2" opacity="0.92"/>
+  <ellipse cx="256" cy="302" rx="13" ry="34" fill="#DFB6B2" opacity="0.92"/>
+  <ellipse cx="210" cy="256" rx="34" ry="13" fill="#DFB6B2" opacity="0.92"/>
+  <ellipse cx="302" cy="256" rx="34" ry="13" fill="#DFB6B2" opacity="0.92"/>
+
+  <circle cx="256" cy="256" r="44" fill="#FBE4D8"/>
+  <circle cx="245" cy="245" r="12" fill="rgba(255,255,255,0.30)"/>
+  <path d="M256 278 Q256 260 256 242" stroke="#854F6C" stroke-width="4.5"
+    stroke-linecap="round" fill="none"/>
+  <path d="M256 262 Q242 248 231 254" stroke="#854F6C" stroke-width="3.5"
+    stroke-linecap="round" fill="none"/>
+  <path d="M256 256 Q270 242 281 248" stroke="#854F6C" stroke-width="3.5"
+    stroke-linecap="round" fill="none"/>
+</svg>
