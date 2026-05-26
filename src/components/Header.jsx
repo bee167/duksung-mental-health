@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { to: '/', label: '홈' },
   { to: '/survey', label: '자가진단' },
   { to: '/diary', label: '감정일기' },
+  { to: '/breathe', label: '호흡' },
   { to: '/counseling', label: '상담 연결' },
 ]
 

@@ -1664,3 +1664,294 @@ p  { color: var(--text-medium); }
     justify-content: center;
   }
 }
+
+/* ============================================
+   Design System Improvements
+   ============================================ */
+:root {
+  --card-radius: 24px;
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.07);
+  --glow-brand: 0 0 0 3px rgba(183, 0, 80, 0.12);
+  --glow-brand-hover: 0 4px 24px rgba(183, 0, 80, 0.18);
+}
+
+.feature-card {
+  border-radius: var(--card-radius) !important;
+}
+
+.info-card {
+  border-radius: var(--card-radius) !important;
+}
+
+.btn-primary:active,
+.btn-sage:active {
+  transform: translateY(0) scale(0.97) !important;
+}
+
+.btn-primary:focus-visible,
+.btn-sage:focus-visible {
+  outline: none;
+  box-shadow: var(--glow-brand);
+}
+
+/* ============================================
+   Breathe Page
+   ============================================ */
+.breathe-page {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(160deg, #190019 0%, #2B124C 50%, #3D1A5C 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 1.5rem 4rem;
+  color: #FBE4D8;
+  position: relative;
+  overflow: hidden;
+}
+
+.breathe-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle 1.5px at 12% 18%, rgba(251,228,216,0.55) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 88% 12%, rgba(251,228,216,0.40) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 55% 88%, rgba(251,228,216,0.30) 0%, transparent 100%),
+    radial-gradient(circle 2px  at 76% 55%, rgba(251,228,216,0.25) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 28% 72%, rgba(251,228,216,0.20) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 92% 78%, rgba(251,228,216,0.35) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 8%  92%, rgba(251,228,216,0.20) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 40% 35%, rgba(251,228,216,0.18) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 65% 25%, rgba(251,228,216,0.30) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 20% 50%, rgba(251,228,216,0.15) 0%, transparent 100%);
+}
+
+.breathe-techniques {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.breathe-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.65rem 1.25rem;
+  background: rgba(251,228,216,0.07);
+  border: 1.5px solid rgba(251,228,216,0.14);
+  border-radius: 18px;
+  color: rgba(251,228,216,0.65);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.breathe-chip-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.breathe-chip-desc {
+  font-size: 0.72rem;
+  color: rgba(223,182,178,0.55);
+}
+
+.breathe-chip.active {
+  background: rgba(251,228,216,0.16);
+  border-color: rgba(251,228,216,0.50);
+  color: #FBE4D8;
+  box-shadow: 0 0 20px rgba(251,228,216,0.10);
+}
+
+.breathe-chip:hover:not(.active) {
+  background: rgba(251,228,216,0.11);
+  border-color: rgba(251,228,216,0.28);
+  color: #FBE4D8;
+}
+
+.breathe-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.breathe-cycles {
+  font-size: 0.88rem;
+  color: #DFB6B2;
+  letter-spacing: 0.03em;
+}
+
+.breathe-orb-wrap {
+  position: relative;
+  width: 224px;
+  height: 224px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breathe-ring {
+  position: absolute;
+  width: 224px;
+  height: 224px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(223,182,178,0.18);
+  box-shadow: 0 0 48px rgba(223,182,178,0.07);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.breathe-orb {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(251,228,216,0.28);
+  box-shadow:
+    0 0 50px rgba(223,182,178,0.14),
+    0 0 100px rgba(96,43,104,0.28),
+    inset 0 0 30px rgba(251,228,216,0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  cursor: default;
+}
+
+.breathe-count {
+  font-size: 3.6rem;
+  font-weight: 800;
+  color: #FBE4D8;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.breathe-phase-label {
+  font-size: 0.88rem;
+  color: #DFB6B2;
+  margin-top: 0.4rem;
+  letter-spacing: 0.06em;
+}
+
+.breathe-idle-text {
+  font-size: 1.4rem;
+  color: rgba(251,228,216,0.50);
+  letter-spacing: 0.12em;
+}
+
+.breathe-guide {
+  font-size: 0.88rem;
+  color: #DFB6B2;
+  letter-spacing: 0.03em;
+  min-height: 1.4rem;
+  text-align: center;
+}
+
+.breathe-controls {
+  position: relative;
+  z-index: 1;
+}
+
+.breathe-btn-start {
+  padding: 0.9rem 3.2rem;
+  background: rgba(251,228,216,0.10);
+  border: 1.5px solid rgba(251,228,216,0.38);
+  border-radius: 50px;
+  color: #FBE4D8;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.breathe-btn-start:hover {
+  background: rgba(251,228,216,0.18);
+  border-color: rgba(251,228,216,0.65);
+  box-shadow: 0 0 24px rgba(251,228,216,0.14);
+  transform: translateY(-2px);
+}
+
+.breathe-btn-start:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.breathe-btn-stop {
+  padding: 0.9rem 3.2rem;
+  background: rgba(133,79,108,0.28);
+  border: 1.5px solid rgba(133,79,108,0.55);
+  border-radius: 50px;
+  color: #DFB6B2;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.breathe-btn-stop:hover {
+  background: rgba(133,79,108,0.40);
+  transform: translateY(-2px);
+}
+
+.breathe-btn-stop:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.breathe-phase-dots {
+  display: flex;
+  gap: 0.65rem;
+  position: relative;
+  z-index: 1;
+}
+
+.breathe-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(251,228,216,0.22);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.breathe-dot.active {
+  background: #FBE4D8;
+  box-shadow: 0 0 8px rgba(251,228,216,0.55);
+}
+
+.breathe-tips {
+  text-align: center;
+  color: rgba(223,182,178,0.55);
+  font-size: 0.85rem;
+  line-height: 1.9;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 480px) {
+  .breathe-techniques {
+    gap: 0.5rem;
+  }
+  .breathe-chip {
+    padding: 0.55rem 1rem;
+  }
+  .breathe-orb-wrap {
+    width: 190px;
+    height: 190px;
+  }
+  .breathe-orb {
+    width: 170px;
+    height: 170px;
+  }
+  .breathe-count {
+    font-size: 3rem;
+  }
+}
