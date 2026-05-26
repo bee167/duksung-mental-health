@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import DuksaeMascot from './components/DuksaeMascot'
 import Home from './pages/Home'
 import Survey from './pages/Survey'
 import Diary from './pages/Diary'
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </main>
+      <DuksaeMascot />
       <Footer />
     </div>
   )

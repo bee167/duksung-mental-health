@@ -9,12 +9,12 @@ export default function DuksungLogo({ size = 36, className = '' }) {
       className={className}
       aria-label="덕성여자대학교 로고"
     >
-      <circle cx="24" cy="24" r="23" fill="#1a4032" />
-      <circle cx="24" cy="24" r="19" fill="none" stroke="#52b788" strokeWidth="1.2" />
+      <circle cx="24" cy="24" r="23" fill="#7A0033" />
+      <circle cx="24" cy="24" r="19" fill="none" stroke="#E8799F" strokeWidth="1.2" />
       <path
         d="M14 18 Q24 10 34 18 L34 30 Q24 38 14 30 Z"
         fill="none"
-        stroke="#74c69d"
+        stroke="#C45080"
         strokeWidth="1"
         opacity="0.6"
       />
@@ -22,7 +22,7 @@ export default function DuksungLogo({ size = 36, className = '' }) {
         x="24"
         y="21"
         textAnchor="middle"
-        fill="#b7e4c7"
+        fill="#FFD0E4"
         fontSize="8"
         fontWeight="600"
         fontFamily="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif"

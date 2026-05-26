@@ -1560,3 +1560,107 @@ p  { color: var(--text-medium); }
     text-align: center;
   }
 }
+
+/* ============================================
+   Duksae Mascot
+   ============================================ */
+.duksae-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 500;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 16px rgba(183, 0, 80, 0.3));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  line-height: 0;
+}
+
+.duksae-btn:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 6px 24px rgba(183, 0, 80, 0.45));
+}
+
+.duksae-btn:active {
+  transform: scale(0.97);
+}
+
+@keyframes duksae-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+.duksae-bounce {
+  animation: duksae-bounce 2.8s ease-in-out infinite;
+  display: block;
+}
+
+.duksae-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 28, 38, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  padding-bottom: 7rem;
+  z-index: 499;
+  animation: fadeIn 0.18s ease;
+}
+
+.duksae-popup {
+  background: #fff;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 40px rgba(183, 0, 80, 0.2), 0 2px 10px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem 1.5rem 1.25rem;
+  max-width: 340px;
+  width: 100%;
+  border: 1.5px solid #f5c0d4;
+  animation: slideUp 0.22s ease;
+}
+
+.duksae-popup-theme {
+  display: inline-block;
+  background: #B70050;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.duksae-popup-message {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.75;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  word-break: keep-all;
+}
+
+.duksae-popup-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.duksae-popup-actions .btn {
+  flex: 1;
+}
+
+@media (max-width: 400px) {
+  .duksae-popup {
+    max-width: 100%;
+  }
+  .duksae-popup-overlay {
+    padding: 1rem;
+    padding-bottom: 6.5rem;
+    align-items: flex-end;
+    justify-content: center;
+  }
+}
