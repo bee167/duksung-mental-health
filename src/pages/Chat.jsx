@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 /* ── 닉네임 풀 ── */
 const NICKNAMES = [
@@ -7,9 +8,8 @@ const NICKNAMES = [
   '지친 버들송이', '토닥토닥 델파이', '맑은 하늘 채송화', '바람결 민들레',
 ]
 
-const STORAGE_USER   = 'chat_user_id'
-const STORAGE_NICK   = 'chat_nickname'
-const DUMMY_ONLINE   = Math.floor(Math.random() * 6) + 3  // 3~8명
+const STORAGE_USER = 'chat_user_id'
+const STORAGE_NICK = 'chat_nickname'
 
 /* ── 유저 초기화 ── */
 function initUser() {
@@ -26,33 +26,6 @@ function initUser() {
   return { uid, nick }
 }
 
-/* ── 샘플 메시지 (첫 로드용) ── */
-function seedMessages() {
-  return [
-    {
-      id: '1',
-      text: '안녕하세요 🌸 오늘 하루 어떠셨나요?',
-      nickname: '맑은 하늘 채송화',
-      userId: 'other-1',
-      timestamp: Date.now() - 120000,
-    },
-    {
-      id: '2',
-      text: '힘든 일이 있었는데 여기 와서 좀 위로받고 싶었어요 💜',
-      nickname: '조용한 진달래',
-      userId: 'other-2',
-      timestamp: Date.now() - 80000,
-    },
-    {
-      id: '3',
-      text: '함께라서 덜 외롭네요. 다들 잘 버티고 있어요 ✨',
-      nickname: '포근한 델파이',
-      userId: 'other-3',
-      timestamp: Date.now() - 30000,
-    },
-  ]
-}
-
 function formatTime(ts) {
   const d = new Date(ts)
   const h = String(d.getHours()).padStart(2, '0')
@@ -61,19 +34,56 @@ function formatTime(ts) {
 }
 
 export default function Chat() {
-  const [user]         = useState(initUser)
-  const [messages, setMessages] = useState(seedMessages)
+  const [user]     = useState(initUser)
+  const [messages, setMessages] = useState([])   // 더미 없이 빈 배열로 시작
   const [input, setInput]       = useState('')
-  const [reportId, setReportId] = useState(null)   // 신고 팝업 대상 메시지 id
+  const [reportId, setReportId] = useState(null)
   const [reported, setReported] = useState(new Set())
-  const bottomRef  = useRef(null)
-  const holdTimer  = useRef(null)
-  const inputRef   = useRef(null)
+  /* Firebase 연동 후 실시간 접속자 수로 교체 — 연동 전까지 숨김 */
+  const [onlineCount, setOnlineCount] = useState(null)
+  const bottomRef = useRef(null)
+  const holdTimer = useRef(null)
+  const inputRef  = useRef(null)
+  const navigate  = useNavigate()
 
   /* ── 자동 스크롤 ── */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  /* ── Firebase 실시간 메시지 수신 (연동 포인트) ──────────────────────────
+   * import { db } from '../firebase'
+   * import { collection, query, orderBy, limitToLast, onSnapshot } from 'firebase/firestore'
+   *
+   * useEffect(() => {
+   *   const q = query(
+   *     collection(db, 'messages'),
+   *     orderBy('timestamp', 'asc'),
+   *     limitToLast(100)
+   *   )
+   *   const unsub = onSnapshot(q, (snap) => {
+   *     setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+   *   })
+   *   return () => unsub()
+   * }, [])
+   * ────────────────────────────────────────────────────────────────────── */
+
+  /* ── Firebase Presence (실시간 접속자 수) 연동 포인트 ──────────────────
+   * import { ref, onValue, onDisconnect, set, remove } from 'firebase/database'
+   * import { rtdb } from '../firebase'   // Realtime Database 사용 권장
+   *
+   * useEffect(() => {
+   *   const presenceRef = ref(rtdb, `presence/${user.uid}`)
+   *   set(presenceRef, true)
+   *   onDisconnect(presenceRef).remove()
+   *
+   *   const countRef = ref(rtdb, 'presence')
+   *   const unsub = onValue(countRef, (snap) => {
+   *     setOnlineCount(snap.size)
+   *   })
+   *   return () => { remove(presenceRef); unsub() }
+   * }, [user.uid])
+   * ────────────────────────────────────────────────────────────────────── */
 
   /* ── 메시지 전송 ── */
   function sendMessage() {
@@ -92,9 +102,8 @@ export default function Chat() {
     setInput('')
     inputRef.current?.focus()
 
-    /* ── Firebase 연동 포인트 ──────────────────────────────────────────────
-     * import { db } from '../firebase'
-     * import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+    /* ── Firebase 메시지 전송 (연동 포인트) ───────────────────────────────
+     * import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
      *
      * await addDoc(collection(db, 'messages'), {
      *   text:      newMsg.text,
@@ -102,23 +111,9 @@ export default function Chat() {
      *   userId:    newMsg.userId,
      *   timestamp: serverTimestamp(),
      * })
-     * setMessages 호출은 onSnapshot에서 자동 처리되므로 여기서는 제거
-     * ─────────────────────────────────────────────────────────────────── */
+     * onSnapshot에서 자동으로 목록을 갱신하므로 setMessages 제거
+     * ────────────────────────────────────────────────────────────────────── */
   }
-
-  /* ── 실시간 수신 (Firebase 연동 포인트) ────────────────────────────────
-   * useEffect(() => {
-   *   const q = query(
-   *     collection(db, 'messages'),
-   *     orderBy('timestamp', 'asc'),
-   *     limitToLast(100)
-   *   )
-   *   const unsub = onSnapshot(q, (snap) => {
-   *     setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-   *   })
-   *   return () => unsub()
-   * }, [])
-   * ─────────────────────────────────────────────────────────────────── */
 
   /* ── 꾹 누르기 (신고 팝업) ── */
   const startHold = useCallback((id) => {
@@ -145,12 +140,33 @@ export default function Chat() {
     <div className="chat-page">
       {/* 상단 헤더 */}
       <div className="chat-header">
-        <p className="chat-online">현재 <strong>{DUMMY_ONLINE}명</strong>의 학우가 대화 중이에요 🍀</p>
-        <p className="chat-my-nick">나의 닉네임: <strong>{user.nick}</strong></p>
+        <button
+          className="chat-back-btn"
+          onClick={() => navigate(-1)}
+          aria-label="뒤로가기"
+        >
+          ‹
+        </button>
+        <div className="chat-header-center">
+          <p className="chat-title">마음 나누기</p>
+          {/* Firebase 접속자 수 연동 후 표시 — 연동 전 숨김 */}
+          {onlineCount !== null && (
+            <p className="chat-online">
+              현재 <strong>{onlineCount}명</strong>의 학우가 대화 중이에요 🍀
+            </p>
+          )}
+        </div>
+        <p className="chat-my-nick">{user.nick}</p>
       </div>
 
       {/* 메시지 목록 */}
       <div className="chat-messages">
+        {messages.length === 0 && (
+          <div className="chat-empty">
+            <p>아직 대화가 없어요.</p>
+            <p>먼저 따뜻한 말을 건네보세요 🌸</p>
+          </div>
+        )}
         {messages.map((msg) => {
           const isMine = msg.userId === user.uid
           if (reported.has(msg.id)) return (

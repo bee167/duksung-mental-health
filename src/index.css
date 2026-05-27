@@ -2360,25 +2360,67 @@ p  { color: var(--text-medium); }
 }
 
 .chat-header {
-  padding: 0.75rem 1rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
   background: var(--card);
   border-bottom: 1px solid rgba(223, 182, 178, 0.10);
   flex-shrink: 0;
 }
 
+.chat-back-btn {
+  background: none;
+  border: none;
+  color: var(--rose);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+.chat-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.chat-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
 .chat-online {
-  font-size: 0.82rem;
-  color: var(--text-medium);
-  margin: 0 0 0.15rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0.1rem 0 0;
 }
 .chat-online strong { color: #7EC8A0; }
 
 .chat-my-nick {
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   margin: 0;
+  flex-shrink: 0;
+  max-width: 80px;
+  text-align: right;
+  word-break: keep-all;
 }
-.chat-my-nick strong { color: var(--rose); }
+
+.chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  padding: 3rem 0;
+  text-align: center;
+}
 
 /* 메시지 영역 */
 .chat-messages {
