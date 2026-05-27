@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  collection, addDoc, deleteDoc, doc,
+  query, orderBy, limitToLast, onSnapshot,
+  serverTimestamp, where, getDocs, Timestamp,
+} from 'firebase/firestore'
+import { db } from '../firebase'
 
 /* ── 닉네임 풀 ── */
 const NICKNAMES = [
@@ -11,7 +17,6 @@ const NICKNAMES = [
 const STORAGE_USER = 'chat_user_id'
 const STORAGE_NICK = 'chat_nickname'
 
-/* ── 유저 초기화 ── */
 function initUser() {
   let uid = localStorage.getItem(STORAGE_USER)
   if (!uid) {
@@ -27,92 +32,117 @@ function initUser() {
 }
 
 function formatTime(ts) {
-  const d = new Date(ts)
-  const h = String(d.getHours()).padStart(2, '0')
-  const m = String(d.getMinutes()).padStart(2, '0')
-  return `${h}:${m}`
+  /* Firestore serverTimestamp는 처음엔 null일 수 있으므로 방어 처리 */
+  if (!ts) return ''
+  const d = ts.toDate ? ts.toDate() : new Date(ts)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+/* 10분 이상 된 stale presence 정리 */
+async function cleanStalePresence() {
+  const cutoff = Timestamp.fromMillis(Date.now() - 10 * 60 * 1000)
+  const q = query(collection(db, 'presence'), where('joinedAt', '<', cutoff))
+  const snap = await getDocs(q)
+  snap.forEach((d) => deleteDoc(d.ref))
 }
 
 export default function Chat() {
   const [user]     = useState(initUser)
-  const [messages, setMessages] = useState([])   // 더미 없이 빈 배열로 시작
+  const [messages, setMessages] = useState([])
   const [input, setInput]       = useState('')
+  const [onlineCount, setOnlineCount] = useState(null)
   const [reportId, setReportId] = useState(null)
   const [reported, setReported] = useState(new Set())
-  /* Firebase 연동 후 실시간 접속자 수로 교체 — 연동 전까지 숨김 */
-  const [onlineCount, setOnlineCount] = useState(null)
-  const bottomRef = useRef(null)
-  const holdTimer = useRef(null)
-  const inputRef  = useRef(null)
-  const navigate  = useNavigate()
+  const [sending, setSending]   = useState(false)
+
+  const bottomRef    = useRef(null)
+  const holdTimer    = useRef(null)
+  const presenceRef  = useRef(null)   // 내 presence 문서 ref
+  const inputRef     = useRef(null)
+  const navigate     = useNavigate()
 
   /* ── 자동 스크롤 ── */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  /* ── Firebase 실시간 메시지 수신 (연동 포인트) ──────────────────────────
-   * import { db } from '../firebase'
-   * import { collection, query, orderBy, limitToLast, onSnapshot } from 'firebase/firestore'
-   *
-   * useEffect(() => {
-   *   const q = query(
-   *     collection(db, 'messages'),
-   *     orderBy('timestamp', 'asc'),
-   *     limitToLast(100)
-   *   )
-   *   const unsub = onSnapshot(q, (snap) => {
-   *     setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-   *   })
-   *   return () => unsub()
-   * }, [])
-   * ────────────────────────────────────────────────────────────────────── */
+  /* ── 실시간 메시지 수신 ── */
+  useEffect(() => {
+    const q = query(
+      collection(db, 'messages'),
+      orderBy('timestamp', 'asc'),
+      limitToLast(100)
+    )
+    const unsub = onSnapshot(q, (snap) => {
+      setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+    })
+    return () => unsub()
+  }, [])
 
-  /* ── Firebase Presence (실시간 접속자 수) 연동 포인트 ──────────────────
-   * import { ref, onValue, onDisconnect, set, remove } from 'firebase/database'
-   * import { rtdb } from '../firebase'   // Realtime Database 사용 권장
-   *
-   * useEffect(() => {
-   *   const presenceRef = ref(rtdb, `presence/${user.uid}`)
-   *   set(presenceRef, true)
-   *   onDisconnect(presenceRef).remove()
-   *
-   *   const countRef = ref(rtdb, 'presence')
-   *   const unsub = onValue(countRef, (snap) => {
-   *     setOnlineCount(snap.size)
-   *   })
-   *   return () => { remove(presenceRef); unsub() }
-   * }, [user.uid])
-   * ────────────────────────────────────────────────────────────────────── */
+  /* ── Presence (실시간 접속자 수) ── */
+  useEffect(() => {
+    let myPresenceId = null
 
-  /* ── 메시지 전송 ── */
-  function sendMessage() {
-    const text = input.trim()
-    if (!text) return
+    async function join() {
+      /* 오래된 presence 정리 */
+      await cleanStalePresence()
 
-    const newMsg = {
-      id: crypto.randomUUID(),
-      text,
-      nickname: user.nick,
-      userId: user.uid,
-      timestamp: Date.now(),
+      /* 내 presence 등록 */
+      const pdoc = await addDoc(collection(db, 'presence'), {
+        userId: user.uid,
+        joinedAt: serverTimestamp(),
+      })
+      myPresenceId = pdoc.id
+      presenceRef.current = pdoc.id
     }
 
-    setMessages((prev) => [...prev, newMsg])
-    setInput('')
-    inputRef.current?.focus()
+    /* presence 컬렉션 실시간 감지 → 접속자 수 */
+    const unsub = onSnapshot(collection(db, 'presence'), (snap) => {
+      setOnlineCount(snap.size)
+    })
 
-    /* ── Firebase 메시지 전송 (연동 포인트) ───────────────────────────────
-     * import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-     *
-     * await addDoc(collection(db, 'messages'), {
-     *   text:      newMsg.text,
-     *   nickname:  newMsg.nickname,
-     *   userId:    newMsg.userId,
-     *   timestamp: serverTimestamp(),
-     * })
-     * onSnapshot에서 자동으로 목록을 갱신하므로 setMessages 제거
-     * ────────────────────────────────────────────────────────────────────── */
+    join()
+
+    /* 탭 닫기 / 새로고침 시 presence 삭제 */
+    function handleUnload() {
+      if (presenceRef.current) {
+        /* sendBeacon은 동기적으로 전송되어 탭 닫혀도 실행됨 — Firestore는 직접 지원 안 해
+           대신 React cleanup에서 deleteDoc 호출로 처리 */
+        deleteDoc(doc(db, 'presence', presenceRef.current))
+      }
+    }
+    window.addEventListener('beforeunload', handleUnload)
+
+    return () => {
+      unsub()
+      window.removeEventListener('beforeunload', handleUnload)
+      if (presenceRef.current) {
+        deleteDoc(doc(db, 'presence', presenceRef.current))
+        presenceRef.current = null
+      }
+    }
+  }, [user.uid])
+
+  /* ── 메시지 전송 ── */
+  async function sendMessage() {
+    const text = input.trim()
+    if (!text || sending) return
+    setSending(true)
+    setInput('')
+    try {
+      await addDoc(collection(db, 'messages'), {
+        text,
+        nickname: user.nick,
+        userId: user.uid,
+        timestamp: serverTimestamp(),
+      })
+    } catch (err) {
+      console.error('전송 실패:', err)
+      setInput(text)   // 실패 시 입력창 복원
+    } finally {
+      setSending(false)
+      inputRef.current?.focus()
+    }
   }
 
   /* ── 꾹 누르기 (신고 팝업) ── */
@@ -149,7 +179,6 @@ export default function Chat() {
         </button>
         <div className="chat-header-center">
           <p className="chat-title">마음 나누기</p>
-          {/* Firebase 접속자 수 연동 후 표시 — 연동 전 숨김 */}
           {onlineCount !== null && (
             <p className="chat-online">
               현재 <strong>{onlineCount}명</strong>의 학우가 대화 중이에요 🍀
@@ -222,14 +251,15 @@ export default function Chat() {
             onKeyDown={handleKeyDown}
             rows={1}
             maxLength={300}
+            disabled={sending}
           />
           <button
             className="chat-send-btn"
             onClick={sendMessage}
-            disabled={!input.trim()}
+            disabled={!input.trim() || sending}
             aria-label="전송"
           >
-            ➤
+            {sending ? '…' : '➤'}
           </button>
         </div>
       </div>
