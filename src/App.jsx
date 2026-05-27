@@ -8,6 +8,7 @@ import Diary from './pages/Diary'
 import Counseling from './pages/Counseling'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Breathe from './pages/Breathe'
+import Chat from './pages/Chat'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/counseling" element={<Counseling />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/breathe" element={<Breathe />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </main>
       <DuksaeMascot />

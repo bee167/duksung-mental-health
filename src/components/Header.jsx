@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: '/diary', label: '감정일기' },
   { to: '/breathe', label: '호흡' },
   { to: '/counseling', label: '상담 연결' },
+  { to: '/chat', label: '익명채팅' },
 ]
 
 export default function Header() {

@@ -2347,3 +2347,208 @@ p  { color: var(--text-medium); }
 .cat-sit-idle {
   animation: cat-sit-bob 2.2s ease-in-out infinite;
 }
+
+/* ── 익명 채팅방 ──────────────────────────────── */
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 56px);
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 0.75rem 1rem 0.6rem;
+  background: var(--card);
+  border-bottom: 1px solid rgba(223, 182, 178, 0.10);
+  flex-shrink: 0;
+}
+
+.chat-online {
+  font-size: 0.82rem;
+  color: var(--text-medium);
+  margin: 0 0 0.15rem;
+}
+.chat-online strong { color: #7EC8A0; }
+
+.chat-my-nick {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+.chat-my-nick strong { color: var(--rose); }
+
+/* 메시지 영역 */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.chat-messages::-webkit-scrollbar { width: 3px; }
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(223, 182, 178, 0.20);
+  border-radius: 2px;
+}
+
+.chat-row { display: flex; flex-direction: column; max-width: 78%; gap: 0.2rem; }
+.chat-row.mine  { align-self: flex-end; align-items: flex-end; }
+.chat-row.theirs { align-self: flex-start; align-items: flex-start; }
+
+.chat-nick {
+  font-size: 0.70rem;
+  color: var(--text-muted);
+  margin: 0 0 0.15rem 0.4rem;
+}
+
+.chat-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+}
+.chat-row.mine .chat-bubble-row { flex-direction: row-reverse; }
+
+.chat-bubble {
+  padding: 0.6rem 0.9rem;
+  border-radius: 18px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  word-break: break-word;
+  max-width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.bubble-mine {
+  background: #FBE4D8;
+  color: #2A1208;
+  border-bottom-right-radius: 5px;
+}
+
+.bubble-theirs {
+  background: #522B5B;
+  color: #FBE4D8;
+  border-bottom-left-radius: 5px;
+}
+
+.chat-time {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.chat-reported-notice {
+  align-self: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(82, 43, 91, 0.30);
+  border-radius: 10px;
+  padding: 4px 12px;
+}
+
+/* 신고 오버레이 */
+.chat-report-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 0, 25, 0.70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+}
+
+.chat-report-box {
+  background: var(--card);
+  border: 1.5px solid rgba(223, 182, 178, 0.20);
+  border-radius: 20px;
+  padding: 1.5rem 1.25rem;
+  max-width: 300px;
+  width: 90%;
+  text-align: center;
+}
+
+.chat-report-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.4rem;
+}
+
+.chat-report-desc {
+  font-size: 0.80rem;
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+
+.chat-report-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* 입력창 */
+.chat-input-area {
+  flex-shrink: 0;
+  background: var(--card);
+  border-top: 1px solid rgba(223, 182, 178, 0.10);
+  padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.chat-notice {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0 0 0.5rem;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.chat-textarea {
+  flex: 1;
+  background: rgba(25, 0, 25, 0.55);
+  border: 1.5px solid rgba(223, 182, 178, 0.20);
+  border-radius: 18px;
+  padding: 0.6rem 1rem;
+  color: var(--text-dark);
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  resize: none;
+  outline: none;
+  min-height: 40px;
+  max-height: 100px;
+  overflow-y: auto;
+  transition: border-color 0.18s;
+}
+.chat-textarea:focus {
+  border-color: rgba(223, 182, 178, 0.45);
+}
+.chat-textarea::placeholder { color: var(--text-muted); }
+
+.chat-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DFB6B2 0%, #FBE4D8 100%);
+  color: #2A1208;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.18s, transform 0.12s;
+}
+.chat-send-btn:disabled { opacity: 0.35; cursor: default; }
+.chat-send-btn:not(:disabled):hover { transform: scale(1.08); }
