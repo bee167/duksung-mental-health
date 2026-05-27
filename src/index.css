@@ -2338,3 +2338,12 @@ p  { color: var(--text-medium); }
   border-color: rgba(223, 182, 178, 0.55);
   color: var(--text-dark);
 }
+
+/* cat sit idle bob */
+@keyframes cat-sit-bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-3px); }
+}
+.cat-sit-idle {
+  animation: cat-sit-bob 2.2s ease-in-out infinite;
+}
