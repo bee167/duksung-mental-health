@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxa3K4EgVn4d6enGC_GCaCfLatbjs_Bsv84z46UnaJ3o6HugpZPnMvOxS71CX0TJGPn6w/exec'
 const STORAGE_KEY = 'participantModalDone'
+const MODAL_ENABLED = false  // 활성화하려면 true로 변경
 
 export default function ParticipantModal() {
   const [visible, setVisible] = useState(false)
@@ -11,7 +12,7 @@ export default function ParticipantModal() {
   const [status, setStatus] = useState('idle')
 
   useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
+    if (MODAL_ENABLED && !localStorage.getItem(STORAGE_KEY)) {
       setVisible(true)
     }
   }, [])
